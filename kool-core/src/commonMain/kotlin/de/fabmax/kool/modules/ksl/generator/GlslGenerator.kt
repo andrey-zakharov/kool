@@ -135,6 +135,7 @@ open class GlslGenerator : KslGenerator() {
             precision highp float;
             precision highp sampler2DShadow;
             precision highp sampler3D;
+            precision mediump isampler2D;
             
             /* 
              * ${fragmentStage.program.name} - generated fragment shader
@@ -146,6 +147,7 @@ open class GlslGenerator : KslGenerator() {
         src.generateUniformSamplers(fragmentStage)
         src.generateInterStageInputs(fragmentStage)
         src.generateOutputs(fragmentStage.outColors)
+        src.generateOutputs(fragmentStage.outIntValues)
         src.generateFunctions(fragmentStage)
 
         src.appendLine("void main() {")
@@ -455,6 +457,8 @@ open class GlslGenerator : KslGenerator() {
             KslTypeDepthSamplerCube -> "samplerCubeShadow"
             KslTypeDepthSampler2dArray -> "sampler2DArrayShadow"
             KslTypeDepthSamplerCubeArray -> "samplerCubeArrayShadow"
+
+            KslTypeIntSampler2d -> "isampler2D"
 
             is KslTypeArray<*> -> glslTypeName(type.elemType)
         }
