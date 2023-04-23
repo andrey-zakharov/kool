@@ -2,28 +2,40 @@ package de.fabmax.kool.platform.webgl
 
 import de.fabmax.kool.pipeline.*
 import de.fabmax.kool.platform.JsContext
+import de.fabmax.kool.platform.WebGL2RenderingContext.Companion.RED_INTEGER
 import de.fabmax.kool.platform.WebGL2RenderingContext.Companion.TEXTURE_3D
 import de.fabmax.kool.platform.WebGL2RenderingContext.Companion.TEXTURE_WRAP_R
+import de.fabmax.kool.platform.glFormat
+import de.fabmax.kool.platform.glType
 import de.fabmax.kool.platform.webgl.TextureLoader.arrayBufferView
+import de.fabmax.kool.util.logD
 import de.fabmax.kool.util.logE
+import de.fabmax.kool.util.logI
 import de.fabmax.kool.util.logW
+import org.khronos.webgl.Int16Array
+import org.khronos.webgl.Int32Array
+import org.khronos.webgl.Int8Array
+import org.khronos.webgl.WebGLRenderingContext.Companion.BYTE
 import org.khronos.webgl.WebGLRenderingContext.Companion.CLAMP_TO_EDGE
 import org.khronos.webgl.WebGLRenderingContext.Companion.COLOR_ATTACHMENT0
 import org.khronos.webgl.WebGLRenderingContext.Companion.FRAMEBUFFER
 import org.khronos.webgl.WebGLRenderingContext.Companion.FRAMEBUFFER_COMPLETE
 import org.khronos.webgl.WebGLRenderingContext.Companion.IMPLEMENTATION_COLOR_READ_FORMAT
 import org.khronos.webgl.WebGLRenderingContext.Companion.IMPLEMENTATION_COLOR_READ_TYPE
+import org.khronos.webgl.WebGLRenderingContext.Companion.INT
 import org.khronos.webgl.WebGLRenderingContext.Companion.LINEAR
 import org.khronos.webgl.WebGLRenderingContext.Companion.LINEAR_MIPMAP_LINEAR
 import org.khronos.webgl.WebGLRenderingContext.Companion.MIRRORED_REPEAT
 import org.khronos.webgl.WebGLRenderingContext.Companion.NEAREST
 import org.khronos.webgl.WebGLRenderingContext.Companion.NEAREST_MIPMAP_NEAREST
 import org.khronos.webgl.WebGLRenderingContext.Companion.REPEAT
+import org.khronos.webgl.WebGLRenderingContext.Companion.RGBA
 import org.khronos.webgl.WebGLRenderingContext.Companion.TEXTURE_2D
 import org.khronos.webgl.WebGLRenderingContext.Companion.TEXTURE_MAG_FILTER
 import org.khronos.webgl.WebGLRenderingContext.Companion.TEXTURE_MIN_FILTER
 import org.khronos.webgl.WebGLRenderingContext.Companion.TEXTURE_WRAP_S
 import org.khronos.webgl.WebGLRenderingContext.Companion.TEXTURE_WRAP_T
+import org.khronos.webgl.WebGLRenderingContext.Companion.UNSIGNED_BYTE
 import org.khronos.webgl.WebGLTexture
 import kotlin.math.min
 
@@ -86,7 +98,33 @@ class LoadedTextureWebGl(val ctx: JsContext, val target: Int, val texture: WebGL
             if (checkFramebufferStatus(FRAMEBUFFER) == FRAMEBUFFER_COMPLETE) {
                 val format = getParameter(IMPLEMENTATION_COLOR_READ_FORMAT) as Int
                 val type = getParameter(IMPLEMENTATION_COLOR_READ_TYPE) as Int
-                readPixels(0, 0, width, height, format, type, targetData.arrayBufferView)
+                logD("readTexturePixels") {
+                    "format=0x${format.toString(16)} type=0x${type.toString(16)} targetData.format = ${targetData.format}"
+                }
+                /**
+                 * The mapping from Type to TypedArray is specified in section 3.7.6 Texture Objects of the WebGL2 Spec:
+                 * TypedArray  WebGL Type
+                    ----------  ----------
+                    Int8Array	BYTE
+                    Uint8Array	UNSIGNED_BYTE
+                    Int16Array	SHORT
+                    Uint16Array	UNSIGNED_SHORT
+                    Uint16Array	UNSIGNED_SHORT_5_6_5
+                    Uint16Array	UNSIGNED_SHORT_5_5_5_1
+                    Uint16Array	UNSIGNED_SHORT_4_4_4_4
+                    Int32Array	INT
+                    Uint32Array	UNSIGNED_INT
+                    Uint32Array	UNSIGNED_INT_5_9_9_9_REV
+                    Uint32Array	UNSIGNED_INT_2_10_10_10_REV
+                    Uint32Array	UNSIGNED_INT_10F_11F_11F_REV
+                    Uint32Array	UNSIGNED_INT_24_8
+                    Uint16Array	HALF_FLOAT
+                    Float32Array	FLOAT
+                 */
+                if ( targetData.format == TexFormat.RI )
+                    readPixels(0, 0, width, height, format, BYTE, Int8Array(targetData.arrayBufferView.buffer))
+                else
+                    readPixels(0, 0, width, height, format, type, targetData.arrayBufferView)
             } else {
                 logE { "Failed reading pixels from framebuffer" }
             }

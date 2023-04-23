@@ -108,7 +108,13 @@ object TextureLoader {
             is TextureData2d -> {
                 when (val buf = data.data) {
                     is Uint8BufferImpl -> {
-                        glTexImage2D(target, 0, data.format.glInternalFormat, data.width, data.height, 0, data.format.glFormat, data.format.glType, buf.buffer)
+                        if ( data.format == TexFormat.RI )
+                            glTexImage2D(target, 0, data.format.glInternalFormat, data.width, data.height, 0,
+                            data.format.glFormat, data.format.glType,
+                            buf.buffer.asIntBuffer())
+                        else glTexImage2D(target, 0, data.format.glInternalFormat, data.width, data.height, 0,
+                            data.format.glFormat, data.format.glType,
+                            buf.buffer)
                     }
                     is Uint16BufferImpl -> {
                         glTexImage2D(target, 0, data.format.glInternalFormat, data.width, data.height, 0, data.format.glFormat, data.format.glType, buf.buffer)

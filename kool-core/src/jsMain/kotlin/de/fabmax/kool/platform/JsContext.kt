@@ -430,6 +430,7 @@ abstract external class WebGL2RenderingContext : WebGLRenderingContext {
         val RGBA16F: Int
 
         val R8I: Int
+        val R8UI: Int
     }
 }
 

@@ -28,10 +28,13 @@ val TexFormat.vkFormat: Int
         TexFormat.RGBA_F16 -> VK_FORMAT_R16G16B16A16_SFLOAT
 
         TexFormat.RI -> VK_FORMAT_R8_SINT
+        TexFormat.RUI -> VK_FORMAT_R8_UINT
     }
 
 val TexFormat.vkBytesPerPx: Int
     get() = when(this) {
+        TexFormat.RI,
+        TexFormat.RUI,
         TexFormat.R -> 1
         TexFormat.RG -> 2
         TexFormat.RGB -> 3
@@ -42,5 +45,4 @@ val TexFormat.vkBytesPerPx: Int
         TexFormat.RGB_F16 -> 6
         TexFormat.RGBA_F16 -> 8
 
-        TexFormat.RI -> 1
     }

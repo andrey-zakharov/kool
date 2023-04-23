@@ -13,4 +13,5 @@ enum class TexFormat(val channels: Int, val hasAlpha: Boolean, val isFloat: Bool
 
     // integer
     RI(1, false, false),
+    RUI(1, false, false),
 }

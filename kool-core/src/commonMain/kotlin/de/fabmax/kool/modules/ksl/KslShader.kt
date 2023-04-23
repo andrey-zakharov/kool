@@ -133,6 +133,7 @@ open class KslShader(val program: KslProgram, val pipelineConfig: PipelineConfig
             program.uniformSamplers.values.forEach { sampler ->
                 val desc = when(val type = sampler.value.expressionType)  {
                     is KslTypeIntSampler2d -> TextureSampler2d.Builder()
+                    is KslTypeUIntSampler2d -> TextureSampler2d.Builder()
                     is KslTypeDepthSampler2d -> TextureSampler2d.Builder().apply { isDepthSampler = true }
                     is KslTypeDepthSamplerCube -> TextureSamplerCube.Builder().apply { isDepthSampler = true }
                     is KslTypeColorSampler1d -> TextureSampler1d.Builder()

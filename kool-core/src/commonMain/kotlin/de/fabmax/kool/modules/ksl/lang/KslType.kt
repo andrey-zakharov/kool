@@ -85,3 +85,4 @@ object KslTypeDepthSampler2dArray : KslTypeDepthSampler<KslTypeFloat4>("depthSam
 object KslTypeDepthSamplerCubeArray : KslTypeDepthSampler<KslTypeFloat4>("depthSamplerCubeArray"), KslTypeSamplerCubeArray
 
 object KslTypeIntSampler2d : KslTypeIntSampler<KslTypeFloat2>("isampler2d"), KslTypeSampler2d
+object KslTypeUIntSampler2d : KslTypeIntSampler<KslTypeFloat2>("usampler2d"), KslTypeSampler2d

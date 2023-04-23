@@ -5,6 +5,7 @@ import de.fabmax.kool.modules.ksl.model.KslOp
 import de.fabmax.kool.modules.ksl.model.KslProcessor
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmName
 
 abstract class KslShaderStage(val program: KslProgram, val type: KslShaderStageType) {
 
@@ -140,6 +141,7 @@ class KslFragmentStage(program: KslProgram) : KslShaderStage(program, KslShaderS
     val outDepth = KslStageOutputScalar(KslVarScalar(NAME_OUT_DEPTH, KslTypeFloat1, true))
     val outColors = mutableListOf<KslStageOutputVector<KslTypeFloat4, KslTypeFloat1>>()
     val outIntValues = mutableListOf<KslStageOutputScalar<KslTypeInt1>>()
+    val outUIntValues = mutableListOf<KslStageOutputScalar<KslTypeUint1>>()
 
     init {
         globalScope.definedStates += inFragPosition.value
@@ -167,6 +169,16 @@ class KslFragmentStage(program: KslProgram) : KslShaderStage(program, KslShaderS
             }
     }
 
+    fun uintOutput(location: Int = 0): KslStageOutputScalar<KslTypeUint1> {
+        val name = "${NAME_OUT_VALUE_PREFIX}${location}"
+        return outUIntValues.find { it.value.stateName == name }
+            ?: KslStageOutputScalar(KslVarScalar(name, KslTypeUint1, true)).also {
+                it.location = location
+                globalScope.definedStates += it.value
+                outUIntValues += it
+            }
+    }
+
     fun KslScopeBuilder.colorOutput(rgb: KslVectorExpression<KslTypeFloat3, KslTypeFloat1>, a: KslScalarExpression<KslTypeFloat1> = 1f.const, location: Int = 0) {
         check (parentStage is KslFragmentStage) { "colorOutput is only available in fragment stage" }
         val outColor = parentStage.colorOutput(location)
@@ -179,9 +191,16 @@ class KslFragmentStage(program: KslProgram) : KslShaderStage(program, KslShaderS
         parentStage.colorOutput(location) set value
     }
 
+    @JvmName("valueOutput")
     fun KslScopeBuilder.valueOutput(value: KslScalarExpression<KslTypeInt1>, location: Int = 0) {
-        check (parentStage is KslFragmentStage) { "colorOutput is only available in fragment stage" }
+        check (parentStage is KslFragmentStage) { "valueOutput is only available in fragment stage" }
         parentStage.intOutput(location) set value
+    }
+
+    @JvmName("uvalueOutput")
+    fun KslScopeBuilder.valueOutput(value: KslScalarExpression<KslTypeUint1>, location: Int = 0) {
+        check (parentStage is KslFragmentStage) { "valueOutput is only available in fragment stage" }
+        parentStage.uintOutput(location) set value
     }
 
     companion object {
