@@ -4,13 +4,11 @@ import de.fabmax.kool.JsImpl.gl
 import de.fabmax.kool.pipeline.*
 import de.fabmax.kool.platform.*
 import de.fabmax.kool.platform.WebGL2RenderingContext.Companion.TEXTURE_3D
-import de.fabmax.kool.platform.webgl.TextureLoader.arrayBufferView
 import de.fabmax.kool.util.Float32BufferImpl
 import de.fabmax.kool.util.Uint16BufferImpl
 import de.fabmax.kool.util.Uint8BufferImpl
 import org.khronos.webgl.ArrayBufferView
 import org.khronos.webgl.Int8Array
-import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.WebGLRenderingContext.Companion.NONE
 import org.khronos.webgl.WebGLRenderingContext.Companion.RGBA
